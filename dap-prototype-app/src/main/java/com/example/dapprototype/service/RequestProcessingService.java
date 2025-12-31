@@ -1,12 +1,13 @@
 package com.example.dapprototype.service;
 
 import com.atlassian.oai.validator.report.ValidationReport;
-import com.example.dapprototype.mapper.CustomerEnrichmentMapper;
 import com.example.dapprototype.model.CustomerEnrichment;
 import com.example.dapprototype.model.ErrorResponse;
 import com.example.dapprototype.model.RequestPayload;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,14 +17,15 @@ public class RequestProcessingService {
 
     private final OpenApiRequestValidator openApiRequestValidator;
     private final ObjectMapper objectMapper;
-    private final CustomerEnrichmentMapper customerEnrichmentMapper;
+    private final Mapper dozerMapper;
 
     public RequestProcessingService(OpenApiRequestValidator openApiRequestValidator, 
-                                   ObjectMapper objectMapper,
-                                   CustomerEnrichmentMapper customerEnrichmentMapper) {
+                                   ObjectMapper objectMapper) {
         this.openApiRequestValidator = openApiRequestValidator;
         this.objectMapper = objectMapper;
-        this.customerEnrichmentMapper = customerEnrichmentMapper;
+        this.dozerMapper = DozerBeanMapperBuilder.create()
+            .withMappingFiles("dozer-mapping.xml")
+            .build();
     }
 
     /**
@@ -54,7 +56,7 @@ public class RequestProcessingService {
         }
 
         // Create CustomerEnrichment object from RequestPayload using Dozer mapper
-        CustomerEnrichment customerEnrichment = customerEnrichmentMapper.mapToCustomerEnrichment(payload);
+        CustomerEnrichment customerEnrichment = dozerMapper.map(payload, CustomerEnrichment.class);
         return ResponseEntity.ok(customerEnrichment);
     }
 }
