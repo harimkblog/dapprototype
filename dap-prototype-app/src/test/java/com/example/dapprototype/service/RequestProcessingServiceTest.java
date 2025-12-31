@@ -1,6 +1,7 @@
 package com.example.dapprototype.service;
 
 import com.example.dapprototype.config.OpenApiValidatorConfig;
+import com.example.dapprototype.model.CustomerEnrichment;
 import com.example.dapprototype.model.ErrorResponse;
 import com.example.dapprototype.model.RequestInfo;
 import com.example.dapprototype.model.RequestPayload;
@@ -26,7 +27,7 @@ class RequestProcessingServiceTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("validateAndProcessRequest returns success for valid payload")
+    @DisplayName("validateAndProcessRequest returns success for valid payload and creates CustomerEnrichment")
     void validateAndProcessRequest_withValidPayload_returnsSuccess() throws Exception {
         RequestPayload payload = new RequestPayload(new RequestInfo("abcd", "2025-12-30T13:36:00Z"));
         String rawBody = objectMapper.writeValueAsString(payload);
@@ -34,10 +35,9 @@ class RequestProcessingServiceTest {
         ResponseEntity<?> result = requestProcessingService.validateAndProcessRequest(rawBody);
 
         assertThat(result.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(result.getBody()).isInstanceOf(RequestPayload.class);
-        RequestPayload resultPayload = (RequestPayload) result.getBody();
-        assertThat(resultPayload.requestInfo().activityId()).isEqualTo("abcd");
-        assertThat(resultPayload.requestInfo().activityTimeStamp()).isEqualTo("2025-12-30T13:36:00Z");
+        assertThat(result.getBody()).isInstanceOf(CustomerEnrichment.class);
+        CustomerEnrichment enrichment = (CustomerEnrichment) result.getBody();
+        assertThat(enrichment.getActivityId()).isEqualTo("abcd");
     }
 
     @Test
@@ -50,8 +50,8 @@ class RequestProcessingServiceTest {
         assertThat(result.getStatusCode().is4xxClientError()).isTrue();
         assertThat(result.getBody()).isInstanceOf(ErrorResponse.class);
         ErrorResponse errorResponse = (ErrorResponse) result.getBody();
-        assertThat(errorResponse.success()).isFalse();
-        assertThat(errorResponse.code()).isEqualTo("VALIDATION_ERROR");
+        assertThat(errorResponse.isSuccess()).isFalse();
+        assertThat(errorResponse.getCode()).isEqualTo("VALIDATION_ERROR");
     }
 
     @Test
@@ -64,8 +64,8 @@ class RequestProcessingServiceTest {
         assertThat(result.getStatusCode().is4xxClientError()).isTrue();
         assertThat(result.getBody()).isInstanceOf(ErrorResponse.class);
         ErrorResponse errorResponse = (ErrorResponse) result.getBody();
-        assertThat(errorResponse.success()).isFalse();
-        assertThat(errorResponse.code()).isEqualTo("VALIDATION_ERROR");
+        assertThat(errorResponse.isSuccess()).isFalse();
+        assertThat(errorResponse.getCode()).isEqualTo("VALIDATION_ERROR");
     }
 
     @Test
@@ -78,8 +78,8 @@ class RequestProcessingServiceTest {
         assertThat(result.getStatusCode().is4xxClientError()).isTrue();
         assertThat(result.getBody()).isInstanceOf(ErrorResponse.class);
         ErrorResponse errorResponse = (ErrorResponse) result.getBody();
-        assertThat(errorResponse.success()).isFalse();
-        assertThat(errorResponse.code()).isEqualTo("VALIDATION_ERROR");
+        assertThat(errorResponse.isSuccess()).isFalse();
+        assertThat(errorResponse.getCode()).isEqualTo("VALIDATION_ERROR");
     }
 
     @Test
@@ -92,7 +92,7 @@ class RequestProcessingServiceTest {
         assertThat(result.getStatusCode().is4xxClientError()).isTrue();
         assertThat(result.getBody()).isInstanceOf(ErrorResponse.class);
         ErrorResponse errorResponse = (ErrorResponse) result.getBody();
-        assertThat(errorResponse.success()).isFalse();
+        assertThat(errorResponse.isSuccess()).isFalse();
     }
 
     @Test
@@ -105,8 +105,8 @@ class RequestProcessingServiceTest {
         assertThat(result.getStatusCode().is4xxClientError()).isTrue();
         assertThat(result.getBody()).isInstanceOf(ErrorResponse.class);
         ErrorResponse errorResponse = (ErrorResponse) result.getBody();
-        assertThat(errorResponse.success()).isFalse();
-        assertThat(errorResponse.code()).isEqualTo("VALIDATION_ERROR");
+        assertThat(errorResponse.isSuccess()).isFalse();
+        assertThat(errorResponse.getCode()).isEqualTo("VALIDATION_ERROR");
     }
 
     @Test
@@ -119,8 +119,8 @@ class RequestProcessingServiceTest {
         assertThat(result.getStatusCode().is4xxClientError()).isTrue();
         assertThat(result.getBody()).isInstanceOf(ErrorResponse.class);
         ErrorResponse errorResponse = (ErrorResponse) result.getBody();
-        assertThat(errorResponse.success()).isFalse();
-        assertThat(errorResponse.code()).isEqualTo("VALIDATION_ERROR");
+        assertThat(errorResponse.isSuccess()).isFalse();
+        assertThat(errorResponse.getCode()).isEqualTo("VALIDATION_ERROR");
     }
 
     @Test
@@ -133,7 +133,7 @@ class RequestProcessingServiceTest {
         assertThat(result.getStatusCode().is4xxClientError()).isTrue();
         assertThat(result.getBody()).isInstanceOf(ErrorResponse.class);
         ErrorResponse errorResponse = (ErrorResponse) result.getBody();
-        assertThat(errorResponse.success()).isFalse();
-        assertThat(errorResponse.code()).isEqualTo("VALIDATION_ERROR");
+        assertThat(errorResponse.isSuccess()).isFalse();
+        assertThat(errorResponse.getCode()).isEqualTo("VALIDATION_ERROR");
     }
 }

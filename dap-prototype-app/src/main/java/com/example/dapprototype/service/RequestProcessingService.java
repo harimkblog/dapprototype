@@ -1,6 +1,8 @@
 package com.example.dapprototype.service;
 
 import com.atlassian.oai.validator.report.ValidationReport;
+import com.example.dapprototype.mapper.CustomerEnrichmentMapper;
+import com.example.dapprototype.model.CustomerEnrichment;
 import com.example.dapprototype.model.ErrorResponse;
 import com.example.dapprototype.model.RequestPayload;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,10 +16,14 @@ public class RequestProcessingService {
 
     private final OpenApiRequestValidator openApiRequestValidator;
     private final ObjectMapper objectMapper;
+    private final CustomerEnrichmentMapper customerEnrichmentMapper;
 
-    public RequestProcessingService(OpenApiRequestValidator openApiRequestValidator, ObjectMapper objectMapper) {
+    public RequestProcessingService(OpenApiRequestValidator openApiRequestValidator, 
+                                   ObjectMapper objectMapper,
+                                   CustomerEnrichmentMapper customerEnrichmentMapper) {
         this.openApiRequestValidator = openApiRequestValidator;
         this.objectMapper = objectMapper;
+        this.customerEnrichmentMapper = customerEnrichmentMapper;
     }
 
     /**
@@ -30,7 +36,8 @@ public class RequestProcessingService {
         // Validate request against OpenAPI spec
         ValidationReport report = openApiRequestValidator.validatePostJson("/request", rawBody, MediaType.APPLICATION_JSON_VALUE);
         if (report.hasErrors()) {
-            ErrorResponse error = ErrorResponse.fromMessages(report.getMessages().stream()
+            ErrorResponse error = new ErrorResponse(false, "Validation failed", "VALIDATION_ERROR", 
+                report.getMessages().stream()
                     .map(ValidationReport.Message::toString)
                     .toList());
             return ResponseEntity.badRequest().body(error);
@@ -41,10 +48,13 @@ public class RequestProcessingService {
         try {
             payload = objectMapper.readValue(rawBody, RequestPayload.class);
         } catch (JsonProcessingException ex) {
-            ErrorResponse error = ErrorResponse.fromMessages(java.util.List.of("Invalid JSON payload"));
+            ErrorResponse error = new ErrorResponse(false, "Invalid JSON payload", "VALIDATION_ERROR", 
+                java.util.List.of("Invalid JSON payload"));
             return ResponseEntity.badRequest().body(error);
         }
 
-        return ResponseEntity.ok(payload);
+        // Create CustomerEnrichment object from RequestPayload using Dozer mapper
+        CustomerEnrichment customerEnrichment = customerEnrichmentMapper.mapToCustomerEnrichment(payload);
+        return ResponseEntity.ok(customerEnrichment);
     }
 }

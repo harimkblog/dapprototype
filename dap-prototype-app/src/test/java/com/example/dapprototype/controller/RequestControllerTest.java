@@ -1,6 +1,7 @@
 package com.example.dapprototype.controller;
 
 import com.example.dapprototype.config.OpenApiValidatorConfig;
+import com.example.dapprototype.mapper.CustomerEnrichmentMapper;
 import com.example.dapprototype.model.RequestInfo;
 import com.example.dapprototype.model.RequestPayload;
 import com.example.dapprototype.service.OpenApiRequestValidator;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = RequestController.class)
-@Import({RequestProcessingService.class, OpenApiRequestValidator.class, OpenApiValidatorConfig.class})
+@Import({RequestProcessingService.class, OpenApiRequestValidator.class, OpenApiValidatorConfig.class, CustomerEnrichmentMapper.class})
 class RequestControllerTest {
 
     @Autowired

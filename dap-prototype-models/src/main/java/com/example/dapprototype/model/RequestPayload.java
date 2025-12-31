@@ -1,6 +1,12 @@
 package com.example.dapprototype.model;
 
-public record RequestPayload(
-        RequestInfo requestInfo
-) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RequestPayload {
+        private RequestInfo requestInfo;
 }

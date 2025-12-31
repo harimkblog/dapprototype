@@ -6,11 +6,12 @@
     <parent>
         <groupId>com.example</groupId>
         <artifactId>dap-prototype-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>dap-prototype-app</artifactId>
     <name>dap-prototype-app</name>
+    <version>0.0.2-SNAPSHOT</version>
     <description>DAP Prototype API sample Spring Boot application</description>
 
     <properties>
@@ -21,7 +22,13 @@
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>dap-prototype-models</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.36</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,10 +48,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
